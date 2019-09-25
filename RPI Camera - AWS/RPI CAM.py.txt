@@ -1,0 +1,32 @@
+Setting up rpicam.py file:
+
+
+from datetime import datetime
+from time import sleep
+import picamera
+import os
+import boto3
+import time
+
+while 1: 
+    # camera setup
+    camera = picamera.PiCamera()
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+
+    # camera warm-up time
+    sleep(2)
+
+
+    # Take Photo
+    camera.capture('image'+ timestr + '.jpg')
+    
+    print('image successfully captured')
+
+    # Upload to S3
+    s3 = boto3.client('s3')
+    filename ='image'+ timestr +'.jpg' 
+    bucket_name = 'YOUR S3 BUCKET NAME'
+    s3.upload_file(filename,bucket_name,filename)
+    print('image uploaded to aws s3')
+    camera.close()
+    sleep(20)
