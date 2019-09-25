@@ -1,0 +1,28 @@
+import Adafruit_DHT
+import RPi.GPIO as GPIO 
+from firebase_admin import db 
+import firebase_admin 
+from firebase_admin import credentials 
+import time 
+import dht11
+
+sensor = DHT11
+cred = credentials.Certificate('iot-s-864d5-firebase-adminsdk-im3fa-e547046cd1.json') # name of the downloaded json file 
+default_app = firebase_admin.initialize_app(cred, {'databaseURL' : 
+'https://iot-s-864d5.firebaseio.com/'}) # data base url of your project 
+root = db.reference() 
+GPIO.setmode(GPIO.BCM) 
+GPIO.setwarnings(False)
+dht_device = dht11.DHT11(4)
+def upload():
+    print("uploading")
+
+    root.child('vijay/savedvalue').push({'Temperature':str(result.temperature)+"cm",'Humidity':str(result.humidity)+"cm",}) 
+
+    root.child('latestvalue').set({'Temperature':str(result.temperature)+"cm",'Humidity':str(result.humidity)+"%" }) 
+    print(result.temperature)
+while True: 
+    result = dht_device.read() 
+    time.sleep(1) 
+    upload()
+
